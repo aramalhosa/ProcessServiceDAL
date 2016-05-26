@@ -1,0 +1,46 @@
+CREATE TABLE ProcessServiceSchema.MenusData (
+   ID INTEGER GENERATED ALWAYS AS IDENTITY NOT NULL,
+   PROJECT VARCHAR(50),
+   MENUNUM INT,
+   SUBMENU1NUM INT,
+   SUBMENU2NUM INT,
+   LABEL VARCHAR(50)
+)
+
+CREATE TABLE ProcessServiceSchema.ChainProjects (
+   Id INTEGER GENERATED ALWAYS AS IDENTITY NOT NULL,
+   Project VARCHAR(30),
+   Description VARCHAR (250),
+   IdProject INTEGER
+)
+
+CREATE TABLE ProcessServiceSchema.ChainProjComponent(
+   Id INTEGER GENERATED ALWAYS AS IDENTITY NOT NULL,
+   Id_Project INTEGER,
+   Attribute VARCHAR(15),
+   Description VARCHAR(300)
+)
+
+CREATE TABLE ProcessServiceSchema.ChainProjRelation(
+   Id INTEGER GENERATED ALWAYS AS IDENTITY NOT NULL,
+   Id_Project INTEGER,
+   Id_Component1 INTEGER,
+   Id_Component2 INTEGER
+)
+
+CREATE TABLE ProcessServiceSchema.ChainProjPropertie(
+   Id INTEGER GENERATED ALWAYS AS IDENTITY NOT NULL,
+   Id_Project INTEGER,
+   Id_Propertie INTEGER,
+   Type VARCHAR(10),
+   Description VARCHAR(150)
+)
+
+CREATE TABLE ProcessServiceSchema.ChainProjCompPropertie(
+   Id INTEGER GENERATED ALWAYS AS IDENTITY NOT NULL,
+   Id_Project INTEGER,
+   Id_Component INTEGER,
+   Id_Propertie INTEGER,
+   ValueNum INTEGER,	
+   ValueAlfa VARCHAR(150)
+)
