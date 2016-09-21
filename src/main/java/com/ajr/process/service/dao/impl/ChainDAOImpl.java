@@ -115,7 +115,6 @@ public class ChainDAOImpl implements ChainDAO {
 		return resultQuery;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public ChainProject retrieveProject(int projectId) {
 
