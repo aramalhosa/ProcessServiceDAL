@@ -31,6 +31,8 @@ public class ChainProject implements Serializable {
 
 	private String description;	
 	
+	private char selected;
+	
 	private Set<ChainProjComponent> chainProjComponents = new HashSet<ChainProjComponent>(
 			0);
 	
@@ -74,6 +76,15 @@ public class ChainProject implements Serializable {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	
+	public char getSelected() {
+		return selected;
+	}
+
+	public void setSelected(char selected) {
+		this.selected = selected;
+	}
+
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "chainProject")
 	public Set<ChainProjComponent> getChainProjComponents() {

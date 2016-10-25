@@ -20,6 +20,8 @@ public class ChainProjComponent implements Serializable {
 	private String attribute;
 
 	private String description;
+	
+	private char selected;
 
 
 	@Id
@@ -57,6 +59,14 @@ public class ChainProjComponent implements Serializable {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public char getSelected() {
+		return selected;
+	}
+
+	public void setSelected(char selected) {
+		this.selected = selected;
 	}
 	
 }

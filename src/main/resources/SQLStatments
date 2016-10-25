@@ -11,14 +11,16 @@ CREATE TABLE ProcessServiceSchema.ChainProjects (
    Id INTEGER GENERATED ALWAYS AS IDENTITY NOT NULL,
    Project VARCHAR(30),
    Description VARCHAR (250),
-   IdProject INTEGER
+   IdProject INTEGER,
+   Selected VARCHAR(1)
 )
 
 CREATE TABLE ProcessServiceSchema.ChainProjComponent(
    Id INTEGER GENERATED ALWAYS AS IDENTITY NOT NULL,
    Id_Project INTEGER,
    Attribute VARCHAR(15),
-   Description VARCHAR(300)
+   Description VARCHAR(300),
+   Selected VARCHAR(1)
 )
 
 CREATE TABLE ProcessServiceSchema.ChainProjRelation(
