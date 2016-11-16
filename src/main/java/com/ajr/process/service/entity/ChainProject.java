@@ -76,7 +76,8 @@ public class ChainProject implements Serializable {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
+
+	@Column(name = "SELECTED")
 	public char getSelected() {
 		return selected;
 	}

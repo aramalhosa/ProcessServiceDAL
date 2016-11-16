@@ -7,5 +7,6 @@
 		<class>com.ajr.process.service.entity.MenuData</class>
 		<class>com.ajr.process.service.entity.ChainProject</class>
 		<class>com.ajr.process.service.entity.ChainProjComponent</class>
+		<class>com.ajr.process.service.entity.ComponentRelation</class>		
 	</persistence-unit>
 </persistence>

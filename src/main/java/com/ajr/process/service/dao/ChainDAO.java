@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ajr.process.service.entity.ChainProjComponent;
 import com.ajr.process.service.entity.ChainProject;
+import com.ajr.process.service.entity.ComponentRelation;
 
 
 public interface ChainDAO {
@@ -14,8 +15,9 @@ public interface ChainDAO {
 	public void updateSelecedProjectComponent(int idProject, int projChain, int component);
 	public List<ChainProject> retrieveProjects(String project);
 	public ChainProject retrieveProject(int IdProject);
-	public ChainProject retrieveProjectSelected(String project);
-	public ChainProjComponent retrieveProjectComponentSelected(int projectId);
-	public List<ChainProjComponent> retrieveProjectComponents(int projectId);
+	public ChainProject retrieveProjectSelected();
+	public ChainProjComponent retrieveProjectComponent(int projectId, int componentId);
+	public ChainProjComponent retrieveSelectedProjectComponent(String project);
+	public List<ComponentRelation> retrieveComponentRelations(int idProj, int idComp);
 
 }

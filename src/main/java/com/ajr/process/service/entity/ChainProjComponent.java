@@ -44,7 +44,8 @@ public class ChainProjComponent implements Serializable {
 	public void setChainProject(ChainProject chainProject) {
 		this.chainProject = chainProject;
 	}	
-	
+
+	@Column(name = "attribute")	
 	public String getAttribute() {
 		return this.attribute;
 	}
@@ -53,6 +54,7 @@ public class ChainProjComponent implements Serializable {
 		this.attribute = attribute;
 	}
 
+	@Column(name = "description")	
 	public String getDescription() {
 		return this.description;
 	}
@@ -61,6 +63,7 @@ public class ChainProjComponent implements Serializable {
 		this.description = description;
 	}
 
+	@Column(name = "selected")	
 	public char getSelected() {
 		return selected;
 	}

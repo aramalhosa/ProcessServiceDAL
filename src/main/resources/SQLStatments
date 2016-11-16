@@ -27,7 +27,9 @@ CREATE TABLE ProcessServiceSchema.ChainProjRelation(
    Id INTEGER GENERATED ALWAYS AS IDENTITY NOT NULL,
    Id_Project INTEGER,
    Id_Component1 INTEGER,
-   Id_Component2 INTEGER
+   Id_Component2 INTEGER,
+   Attribute VARCHAR(15),
+   Description VARCHAR(300)
 )
 
 CREATE TABLE ProcessServiceSchema.ChainProjPropertie(
