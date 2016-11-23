@@ -13,34 +13,33 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-
 /**
  * The persistent class for the CHAINPROJECTS database table.
  * 
  */
 @Entity
-@Table(name="CHAINPROJECTS")
+@Table(name = "CHAINPROJECTS")
 public class ChainProject implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private int id;
 
 	private String project;
-	
+
 	private String chainProject;
 
-	private String description;	
-	
+	private String description;
+
 	private char selected;
-	
+
 	private Set<ChainProjComponent> chainProjComponents = new HashSet<ChainProjComponent>(
 			0);
-	
-    public ChainProject() {
-    }
+
+	public ChainProject() {
+	}
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID")
 	public int getId() {
 		return this.id;
@@ -48,7 +47,7 @@ public class ChainProject implements Serializable {
 
 	public void setId(int id) {
 		this.id = id;
-	}    
+	}
 
 	@Column(name = "PROJECT")
 	public String getProject() {
@@ -86,13 +85,13 @@ public class ChainProject implements Serializable {
 		this.selected = selected;
 	}
 
-
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "chainProject")
+	@OneToMany(fetch = FetchType.LAZY)
 	public Set<ChainProjComponent> getChainProjComponents() {
 		return chainProjComponents;
 	}
 
-	public void setChainProjComponents(Set<ChainProjComponent> chainProjComponents) {
+	public void setChainProjComponents(
+			Set<ChainProjComponent> chainProjComponents) {
 		this.chainProjComponents = chainProjComponents;
 	}
 

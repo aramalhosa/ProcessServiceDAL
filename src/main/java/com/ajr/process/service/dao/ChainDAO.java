@@ -15,9 +15,9 @@ public interface ChainDAO {
 	public void updateSelecedProjectComponent(int idProject, int projChain, int component);
 	public List<ChainProject> retrieveProjects(String project);
 	public ChainProject retrieveProject(int IdProject);
-	public ChainProject retrieveProjectSelected();
+	public ChainProject retrieveProjectSelected(String project);
 	public ChainProjComponent retrieveProjectComponent(int projectId, int componentId);
-	public ChainProjComponent retrieveSelectedProjectComponent(String project);
+	public ChainProjComponent retrieveSelectedComponentFromSelectedProject(String project);
 	public List<ComponentRelation> retrieveComponentRelations(int idProj, int idComp);
 
 }

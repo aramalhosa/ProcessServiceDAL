@@ -36,7 +36,7 @@ public class ChainProjComponent implements Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "ID", nullable = false)
+	@JoinColumn(name = "ID_PROJECT", nullable = false)
 	public ChainProject getChainProject() {
 		return chainProject;
 	}

@@ -181,13 +181,14 @@ public class ChainDAOImpl implements ChainDAO {
 		return resultQuery;
 	}
 	
-	public ChainProject retrieveProjectSelected() {
+	public ChainProject retrieveProjectSelected(String project) {
 
 		ChainProject resultQuery = new ChainProject();
 
 		Query q = getEntityManager().createQuery(
-				"Select m from ChainProject m where selected = '1'");
-
+				"Select c from ChainProject c where c.project= :project and c.selected = '1'");
+		q.setParameter("project", project);
+		
 		resultQuery = (ChainProject) q.getSingleResult();
 
 		return resultQuery;
@@ -208,34 +209,29 @@ public class ChainDAOImpl implements ChainDAO {
 		
 	}
 	
-	public ChainProjComponent retrieveSelectedProjectComponent(String project){
+	public ChainProjComponent retrieveSelectedComponentFromSelectedProject(String project){
+		
 		List<ChainProjComponent> resultQuery = new ArrayList<ChainProjComponent>();
 		
 		System.out.println("Vai obter o projeto com o nome " + project);
 		
-		ChainProject resultProject = new ChainProject();
-
-		Query q1 = getEntityManager().createQuery(
-				"Select c from ChainProject c where c.project = :project and c.selected = '1'");
-
-		q1.setParameter("project", project.trim());
-
-		resultProject = (ChainProject) q1.getSingleResult();
+		ChainProject resultProject = retrieveProjectSelected(project);
 		
-		System.out.println("O projeto que foi retornado foi o " + resultProject);
+		System.out.println("O projeto que foi retornado foi o " + resultProject.getDescription());
 		
 		System.out.println("Vai obter o componente selecionado para o projeto!");
 		
 		Query q = getEntityManager().createQuery(
-				"Select c from ChainProjComponent c where c.ChainProject.id = :iProj and c.selected = '1'");
+				"Select c from ChainProject p join p.chainProjComponents c where c.id = :idProj and p.selected = '1'");
 		q.setParameter("idProj", resultProject.getId());	
 
-		resultQuery = q.getResultList();
-		
-		Iterator<ChainProjComponent> xpto = resultQuery.iterator(); 
+		resultQuery = (List<ChainProjComponent>) q.getResultList();
+
+		Iterator<?> xpto = resultQuery.iterator(); 
 		
 		while(xpto.hasNext()){
-			System.out.println("O próximo componente é " + xpto.next().getAttribute());
+			ChainProjComponent xpto1 = (ChainProjComponent) xpto.next();		
+			System.out.println("O próximo componente é " + xpto1.getAttribute());
 		}
 
 		return null;
