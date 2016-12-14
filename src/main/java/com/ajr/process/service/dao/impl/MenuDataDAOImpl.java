@@ -8,9 +8,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.ajr.process.service.dao.MenuDataDAO;
 import com.ajr.process.service.entity.MenuData;
 import com.ajr.process.service.exceptions.EntityNotFoundException;

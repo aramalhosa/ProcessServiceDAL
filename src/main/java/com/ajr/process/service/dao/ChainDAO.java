@@ -14,10 +14,12 @@ public interface ChainDAO {
 	public void removeProjectComponents(int idProject);
 	public void updateSelecedProjectComponent(int idProject, int projChain, int component);
 	public List<ChainProject> retrieveProjects(String project);
+	public List<ChainProjComponent> retrieveChainProjectComponents(int chainProj);
+	public List<ChainProjComponent> retrieveSelectedChainProjectComponents(String project);
 	public ChainProject retrieveProject(int IdProject);
 	public ChainProject retrieveProjectSelected(String project);
 	public ChainProjComponent retrieveProjectComponent(int projectId, int componentId);
 	public ChainProjComponent retrieveSelectedComponentFromSelectedProject(String project);
-	public List<ComponentRelation> retrieveComponentRelations(int idProj, int idComp);
+	public List<ChainProjComponent> retrieveComponentRelations(int idProj, int idComp);
 
 }

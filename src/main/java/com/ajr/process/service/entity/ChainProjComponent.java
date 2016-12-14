@@ -1,7 +1,16 @@
 package com.ajr.process.service.entity;
 
 import java.io.Serializable;
-import javax.persistence.*;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 
 /**
@@ -13,9 +22,9 @@ import javax.persistence.*;
 public class ChainProjComponent implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
-	
-	private ChainProject chainProject;
 	
 	private String attribute;
 
@@ -23,9 +32,10 @@ public class ChainProjComponent implements Serializable {
 	
 	private char selected;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ID_PROJECT", nullable = false)
+	private ChainProject chainProject;	
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name = "id")	    
 	public int getId() {
 		return this.id;
@@ -34,17 +44,7 @@ public class ChainProjComponent implements Serializable {
 	public void setId(int id) {
 		this.id = id;
 	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "ID_PROJECT", nullable = false)
-	public ChainProject getChainProject() {
-		return chainProject;
-	}
-
-	public void setChainProject(ChainProject chainProject) {
-		this.chainProject = chainProject;
-	}	
-
+	
 	@Column(name = "attribute")	
 	public String getAttribute() {
 		return this.attribute;
@@ -71,5 +71,13 @@ public class ChainProjComponent implements Serializable {
 	public void setSelected(char selected) {
 		this.selected = selected;
 	}
+	
+	public ChainProject getChainProject() {
+		return chainProject;
+	}
+
+	public void setChainProject(ChainProject chainProject) {
+		this.chainProject = chainProject;
+	}	
 	
 }

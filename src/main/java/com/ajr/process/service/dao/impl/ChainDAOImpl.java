@@ -1,13 +1,13 @@
 package com.ajr.process.service.dao.impl;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.hibernate.sql.Select;
 import org.springframework.stereotype.Repository;
 
 import com.ajr.process.service.dao.ChainDAO;
@@ -91,8 +91,7 @@ public class ChainDAOImpl implements ChainDAO {
 		String selectQuery = "SELECT m FROM ChainProjComponent m WHERE m.idProject = :project";
 
 		Query q = getEntityManager().createQuery(selectQuery);
-
-		q.setParameter("project", idProject);
+        q.setParameter("project", idProject);
 
 		componentsToRemove = q.getResultList();
 
@@ -168,6 +167,36 @@ public class ChainDAOImpl implements ChainDAO {
 		return resultQuery;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public List<ChainProjComponent> retrieveChainProjectComponents(int chainProj){
+		
+		List<ChainProjComponent> resultQuery = new ArrayList<ChainProjComponent>();
+
+		Query q = getEntityManager().createQuery(
+				"Select c from ChainProject p join p.chainProjComponents c where p.id=:idProj");
+
+		q.setParameter("idProj", chainProj);
+
+		resultQuery = q.getResultList();
+
+		return resultQuery;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<ChainProjComponent> retrieveSelectedChainProjectComponents(String project){
+		
+		List<ChainProjComponent> resultQuery = new ArrayList<ChainProjComponent>();
+
+		Query q = getEntityManager().createQuery(
+				"Select c from ChainProject p join p.chainProjComponents c where p.project= :project and p.selected = '1'");
+
+		q.setParameter("project", project);
+
+		resultQuery = q.getResultList();
+
+		return resultQuery;
+	}
+	
 	public ChainProject retrieveProject(int projectId) {
 
 		ChainProject resultQuery = new ChainProject();
@@ -211,44 +240,35 @@ public class ChainDAOImpl implements ChainDAO {
 	
 	public ChainProjComponent retrieveSelectedComponentFromSelectedProject(String project){
 		
+		ChainProjComponent resultQuery = new ChainProjComponent();
+			
+		String selectQuery = "Select c from ChainProject p join p.chainProjComponents c where p.project= :project and p.selected = '1' and c.selected = '1'";
+				
+		Query q = getEntityManager().createQuery(selectQuery);
+		q.setParameter("project", project);	
+
+		resultQuery = (ChainProjComponent) q.getSingleResult();
+
+		return resultQuery;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<ChainProjComponent> retrieveComponentRelations(int idProj, int idComp){
+		
 		List<ChainProjComponent> resultQuery = new ArrayList<ChainProjComponent>();
 		
-		System.out.println("Vai obter o projeto com o nome " + project);
-		
-		ChainProject resultProject = retrieveProjectSelected(project);
-		
-		System.out.println("O projeto que foi retornado foi o " + resultProject.getDescription());
-		
-		System.out.println("Vai obter o componente selecionado para o projeto!");
-		
 		Query q = getEntityManager().createQuery(
-				"Select c from ChainProject p join p.chainProjComponents c where c.id = :idProj and p.selected = '1'");
-		q.setParameter("idProj", resultProject.getId());	
-
-		resultQuery = (List<ChainProjComponent>) q.getResultList();
-
-		Iterator<?> xpto = resultQuery.iterator(); 
+				"Select c from ChainProjComponent c join ComponentRelation r on (c.id = r.componentRelId) where r.componentId = :componentId and r.projectId = :project");
 		
-		while(xpto.hasNext()){
-			ChainProjComponent xpto1 = (ChainProjComponent) xpto.next();		
-			System.out.println("O próximo componente é " + xpto1.getAttribute());
-		}
+		q.setParameter("project", idProj);
+		q.setParameter("componentId", idComp);
 
-		return null;
+		resultQuery = q.getResultList();
+
+		return resultQuery;
+		
 	}
 	
-	
-	
-	public List<ComponentRelation> retrieveComponentRelations(int idProj, int idComp){
-		
-		List<ComponentRelation> resultQuery = new ArrayList<ComponentRelation>();
-		
-		//TODO  - Falta implementar o retorno!!!
-		
-		return null;
-		
-	}
- 	
 	private <H extends ChainProject> H findChainProjectData(Class<H> clazz,
 			Integer id) throws EntityNotFoundException {
 		H e = getEntityManager().find(clazz, id);

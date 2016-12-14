@@ -1,16 +1,11 @@
 package com.ajr.process.service.entity;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 
@@ -30,14 +25,10 @@ public class ComponentRelation implements Serializable {
 	private int componentId;
 
 	private int componentRelId;	
-	
-	private String attribute;
-	
-	private String description;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name = "id")	  
+	@Column(name = "ID")	  
 	public int getId() {
 		return id;
 	}
@@ -46,7 +37,7 @@ public class ComponentRelation implements Serializable {
 		this.id = id;
 	}
 
-	@Column(name = "Id_Project")	
+	@Column(name = "ID_PROJECT")	
 	public int getProjectId() {
 		return projectId;
 	}
@@ -71,24 +62,6 @@ public class ComponentRelation implements Serializable {
 
 	public void setComponentRelId(int componentRelId) {
 		this.componentRelId = componentRelId;
-	}
-
-	@Column(name = "ATTRIBUTE")
-	public String getAttribute() {
-		return attribute;
-	}
-
-	public void setAttribute(String attribute) {
-		this.attribute = attribute;
-	}
-
-	@Column(name = "DESCRIPTION")
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
 	}
 	
 }

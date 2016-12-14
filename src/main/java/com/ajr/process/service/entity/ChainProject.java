@@ -22,6 +22,8 @@ import javax.persistence.Table;
 public class ChainProject implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
 	private String project;
@@ -32,14 +34,12 @@ public class ChainProject implements Serializable {
 
 	private char selected;
 
-	private Set<ChainProjComponent> chainProjComponents = new HashSet<ChainProjComponent>(
-			0);
+	@OneToMany(targetEntity = ChainProjComponent.class, mappedBy = "chainProject", fetch = FetchType.LAZY)
+	private Set<ChainProjComponent> chainProjComponents = new HashSet<ChainProjComponent>();
 
 	public ChainProject() {
 	}
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID")
 	public int getId() {
 		return this.id;
@@ -85,7 +85,6 @@ public class ChainProject implements Serializable {
 		this.selected = selected;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY)
 	public Set<ChainProjComponent> getChainProjComponents() {
 		return chainProjComponents;
 	}
