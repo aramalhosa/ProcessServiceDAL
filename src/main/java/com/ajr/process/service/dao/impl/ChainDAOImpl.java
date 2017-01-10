@@ -7,7 +7,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import org.hibernate.sql.Select;
 import org.springframework.stereotype.Repository;
 
 import com.ajr.process.service.dao.ChainDAO;
@@ -253,14 +252,13 @@ public class ChainDAOImpl implements ChainDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<ChainProjComponent> retrieveComponentRelations(int idProj, int idComp){
+	public List<ComponentRelation> retrieveComponentRelations(int idComp){
 		
-		List<ChainProjComponent> resultQuery = new ArrayList<ChainProjComponent>();
+		List<ComponentRelation> resultQuery = new ArrayList<ComponentRelation>();
 		
 		Query q = getEntityManager().createQuery(
-				"Select c from ChainProjComponent c join ComponentRelation r on (c.id = r.componentRelId) where r.componentId = :componentId and r.projectId = :project");
-		
-		q.setParameter("project", idProj);
+		        "Select c from ChainProjComponent p join p.componentRelations c where p.id = :componentId"); 		
+
 		q.setParameter("componentId", idComp);
 
 		resultQuery = q.getResultList();

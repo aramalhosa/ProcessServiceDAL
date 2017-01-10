@@ -1,11 +1,16 @@
 package com.ajr.process.service.entity;
 
 import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 
@@ -18,16 +23,20 @@ import javax.persistence.Table;
 public class ComponentRelation implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 
 	private int projectId;
 	
-	private int componentId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ID_COMPONENT1", nullable = false)
+	private ChainProjComponent chainProjectComponent;	
 
-	private int componentRelId;	
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="ID_COMPONENT2", nullable=false)
+	ChainProjComponent chainProjectComponent2;	
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name = "ID")	  
 	public int getId() {
 		return id;
@@ -46,22 +55,20 @@ public class ComponentRelation implements Serializable {
 		this.projectId = projectId;
 	}
 
-	@Column(name = "ID_COMPONENT1")
-	public int getComponentId() {
-		return componentId;
+	public ChainProjComponent getChainProjectComponent() {
+		return chainProjectComponent;
 	}
 
-	public void setComponentId(int componentId) {
-		this.componentId = componentId;
+	public void setChainProjectComponent(ChainProjComponent chainProjectComponent) {
+		this.chainProjectComponent = chainProjectComponent;
 	}
 
-	@Column(name = "ID_COMPONENT2")
-	public int getComponentRelId() {
-		return componentRelId;
+	public ChainProjComponent getChainProjectComponent2() {
+		return chainProjectComponent2;
 	}
 
-	public void setComponentRelId(int componentRelId) {
-		this.componentRelId = componentRelId;
+	public void setChainProjectComponent2(ChainProjComponent chainProjectComponent2) {
+		this.chainProjectComponent2 = chainProjectComponent2;
 	}
 	
 }
