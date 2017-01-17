@@ -25,9 +25,17 @@ public class ComponentRelation implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name = "ID")	 
 	private int id;
 
+	@Column(name = "ID_PROJECT")	
 	private int projectId;
+
+//	@Column(name = "ID_COMPONENT1")
+//	private int comp1;
+	
+//	@Column(name = "ID_COMPONENT2")
+//	private int comp2;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ID_COMPONENT1", nullable = false)
@@ -35,7 +43,7 @@ public class ComponentRelation implements Serializable {
 
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="ID_COMPONENT2", nullable=false)
-	ChainProjComponent chainProjectComponent2;	
+	ChainProjComponent chainProjectComponent2=null;	
 
 	@Column(name = "ID")	  
 	public int getId() {
@@ -46,7 +54,6 @@ public class ComponentRelation implements Serializable {
 		this.id = id;
 	}
 
-	@Column(name = "ID_PROJECT")	
 	public int getProjectId() {
 		return projectId;
 	}
@@ -62,6 +69,22 @@ public class ComponentRelation implements Serializable {
 	public void setChainProjectComponent(ChainProjComponent chainProjectComponent) {
 		this.chainProjectComponent = chainProjectComponent;
 	}
+
+//	public int getComp1() {
+//		return comp1;
+//	}
+//
+//	public void setComp1(int comp1) {
+//		this.comp1 = comp1;
+//	}
+
+//	public int getComp2() {
+//		return comp2;
+//	}
+//
+//	public void setComp2(int comp2) {
+//		this.comp2 = comp2;
+//	}
 
 	public ChainProjComponent getChainProjectComponent2() {
 		return chainProjectComponent2;

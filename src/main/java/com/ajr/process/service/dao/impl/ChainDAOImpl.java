@@ -266,6 +266,20 @@ public class ChainDAOImpl implements ChainDAO {
 		return resultQuery;
 		
 	}
+
+	@SuppressWarnings("unchecked")
+	public List<ComponentRelation> retrieveRelations(){
+		
+		List<ComponentRelation> resultQuery = new ArrayList<ComponentRelation>();
+		
+		Query q = getEntityManager().createQuery(
+		        "Select c from ComponentRelation c where c.projectId = 1"); 		
+
+		resultQuery = q.getResultList();
+
+		return resultQuery;
+		
+	}	
 	
 	private <H extends ChainProject> H findChainProjectData(Class<H> clazz,
 			Integer id) throws EntityNotFoundException {
