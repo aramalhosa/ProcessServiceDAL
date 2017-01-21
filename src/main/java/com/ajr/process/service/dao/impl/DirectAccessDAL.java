@@ -20,20 +20,22 @@ import com.ajr.process.service.entity.ComponentRelation;
 
 public class DirectAccessDAL {
 
-	//private static String dbURL = "jdbc:derby://localhost:1527/myDB;create=true;user=me;password=mine";
+	// private static String dbURL =
+	// "jdbc:derby://localhost:1527/myDB;create=true;user=me;password=mine";
 	private static String dbURL = "jdbc:derby:C://AJR_DataBases/ProcessServiceDB;create=true;user=PROCESSSERVICESCHEMA;password=";
-	
+
 	private static String tableName = "CHAINPROJRELATION";
 	// jdbc Connection
 	private static java.sql.Connection conn = null;
 	private static Statement stmt = null;
 
 	public static void main(String[] args) {
-		//createConnection();
-		//selectRelation();
-		selectRelationJPA();
-		//selectRelationJPA1();
-		//shutdown();
+		// createConnection();
+		// selectRelation();
+		// selectRelationJPA();
+		// selectRelationJPA1();
+		selectRelationJPA2();
+		// shutdown();
 	}
 
 	private static void createConnection() {
@@ -46,50 +48,96 @@ public class DirectAccessDAL {
 		}
 	}
 
-	
 	private static void selectRelationJPA() {
-		
+
 		List<ComponentRelation> resultQuery = new ArrayList<ComponentRelation>();
-		
-		EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory( "ProcessServiceDAL" );
-		EntityManager entityManager = entityManagerFactory.createEntityManager();
+
+		EntityManagerFactory entityManagerFactory = Persistence
+				.createEntityManagerFactory("ProcessServiceDAL");
+		EntityManager entityManager = entityManagerFactory
+				.createEntityManager();
 		entityManager.getTransaction().begin();
-		
-		Query q = entityManager.createQuery(
-		        "Select c from ComponentRelation c"); 		
-		
+
+		Query q = entityManager
+				.createQuery("Select c from ComponentRelation c");
+
 		resultQuery = q.getResultList();
-		
+
 		for (ComponentRelation l : resultQuery) {
 
-			System.out.println("Relation-> Project: " + l.getProjectId() + " Component1 - " + l.getChainProjectComponent().getDescription() + " Component2 - " + l.getChainProjectComponent2().getAttribute());
+			System.out.println("Relation-> Project: " + l.getProjectId()
+					+ " Component1 - "
+					+ l.getChainProjectComponent().getDescription()
+					+ " Component2 - "
+					+ l.getChainProjectComponent2().getAttribute());
 
 		}
-		
+
 		entityManager.close();
 	}
-	
+
 	private static void selectRelationJPA1() {
-		
+
 		List<ChainProjComponent> resultQuery = new ArrayList<ChainProjComponent>();
-		
-		EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory( "ProcessServiceDAL" );
-		EntityManager entityManager = entityManagerFactory.createEntityManager();
+
+		EntityManagerFactory entityManagerFactory = Persistence
+				.createEntityManagerFactory("ProcessServiceDAL");
+		EntityManager entityManager = entityManagerFactory
+				.createEntityManager();
 		entityManager.getTransaction().begin();
-		
-		Query q = entityManager.createQuery(
-		        "Select c from ChainProjComponent c"); 		
-	
+
+		Query q = entityManager
+				.createQuery("Select c from ChainProjComponent c");
+
 		resultQuery = q.getResultList();
-		
+
 		for (ChainProjComponent l : resultQuery) {
 
-			System.out.println("Component -> Project: " + l.getAttribute() + " Component1 - " + l.getDescription());
+			System.out.println("Component -> Project: " + l.getAttribute()
+					+ " Component1 - " + l.getDescription());
 		}
-		
+
 		entityManager.close();
-	}	
-	
+	}
+
+	private static void selectRelationJPA2() {
+
+		// List<ComponentRelation> resultQuery = new ArrayList<ComponentRelation>();
+
+		EntityManagerFactory entityManagerFactory = Persistence
+				.createEntityManagerFactory("ProcessServiceDAL");
+		EntityManager entityManager = entityManagerFactory
+				.createEntityManager();
+		entityManager.getTransaction().begin();
+
+		// Query q = entityManager.createQuery(
+		// "Select c from ChainProjComponent p join p.componentRelations c where p.id = 1");
+		//
+		// resultQuery = q.getResultList();
+		//
+		// for (ComponentRelation l : resultQuery) {
+		//
+		// System.out.println("Component -> Project: " +
+		// l.getChainProjectComponent2().getId() + " Component1 - " +
+		// l.getChainProjectComponent2().getDescription() + " Component2 - " +
+		// l.getChainProjectComponent2().getAttribute());
+		// }
+
+		Query q = entityManager
+				.createQuery("Select c.chainProjectComponent2.id, c.chainProjectComponent2.description, c.chainProjectComponent2.attribute from ChainProjComponent p join p.componentRelations c where p.id = 1");
+
+		List<Object[]> resultQuery = q.getResultList();
+
+		for (Object[] l : resultQuery) {
+
+			System.out.println("Component -> Project: "
+					+ Integer.toString((Integer) l[0]) + " Component1 - "
+					+ (String) l[1] + " Component2 - " + (String) l[2]);
+		}
+
+		entityManager.close();
+	}
+
 	private static void selectRelation() {
 		try {
 
