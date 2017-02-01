@@ -12,7 +12,7 @@ public interface ChainDAO {
 	public void insertProject(String project, String chainProject, String description);
 	public void insertProjectComponent(int id, String attribute, String description);
 	public void removeProjectComponents(int idProject);
-	public void updateSelecedProjectComponent(int idProject, int projChain, int component);
+	public void updateSelecedProjectComponent(String project, int projChain, int component);
 	public List<ChainProject> retrieveProjects(String project);
 	public List<ChainProjComponent> retrieveChainProjectComponents(int chainProj);
 	public List<ChainProjComponent> retrieveSelectedChainProjectComponents(String project);

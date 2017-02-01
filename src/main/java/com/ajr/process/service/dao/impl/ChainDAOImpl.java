@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Repository;
 
 import com.ajr.process.service.dao.ChainDAO;
@@ -31,7 +32,7 @@ public class ChainDAOImpl implements ChainDAO {
 
 		List<ChainProject> resultQuery = new ArrayList<ChainProject>();
 
-		String selectQuery = "SELECT m FROM ChainProject m WHERE m.project = :project and m.chainProject = :chainPrj";
+		String selectQuery = "Select m from ChainProject m where m.project = :project and m.chainProject = :chainPrj";
 
 		Query q = getEntityManager().createQuery(selectQuery);
 
@@ -88,7 +89,7 @@ public class ChainDAOImpl implements ChainDAO {
 
 		List<ChainProjComponent> componentsToRemove = new ArrayList<ChainProjComponent>();
 
-		String selectQuery = "SELECT m FROM ChainProjComponent m WHERE m.idProject = :project";
+		String selectQuery = "Select m from ChainProjComponent m where m.id = :project";
 
 		Query q = getEntityManager().createQuery(selectQuery);
 		q.setParameter("project", idProject);
@@ -99,55 +100,59 @@ public class ChainDAOImpl implements ChainDAO {
 			em.remove(m);
 		}
 	}
-
-	public void updateSelecedProjectComponent(int idProj, int idChainProj,
+	
+	@SuppressWarnings("unchecked")
+	public void updateSelecedProjectComponent(String project, int idChainProj,
 			int idComponent) {
 
 		Query q = getEntityManager()
 				.createQuery(
-						"SELECT c FROM ChainProjects c WHERE c.IdProject = :idProj and c.Selected='1'");
-		q.setParameter("idProj", idProj);
+						"Select c from ChainProject c where c.project = :proj and c.selected='1'");
+		q.setParameter("proj", project);
 
-		ChainProject returnChainProj = (ChainProject) q.getSingleResult();
+		List<ChainProject> returnChainProj = q.getResultList();
 
 		if (!returnChainProj.equals(null)) {
-			returnChainProj.setSelected('0');
-			getEntityManager().merge(returnChainProj);
+			ChainProject returnChainProj1 = returnChainProj.get(0);
+			returnChainProj1.setSelected('0');
+			getEntityManager().merge(returnChainProj1);
 		}
 
 		Query q1 = getEntityManager().createQuery(
-				"SELECT c FROM ChainProjects c WHERE c.Id = :idProj");
-		q1.setParameter("idProj", idProj);
+				"Select c from ChainProject c where c.id = :idProj");
+		q1.setParameter("idProj", idChainProj);
 
-		returnChainProj = (ChainProject) q.getSingleResult();
+		returnChainProj = q.getResultList();
 
 		if (!returnChainProj.equals(null)) {
-			returnChainProj.setSelected('1');
-			getEntityManager().merge(returnChainProj);
+			ChainProject returnChainProj1 = returnChainProj.get(0);
+			returnChainProj1.setSelected('1');
+			getEntityManager().merge(returnChainProj1);
 		}
 
 		Query q2 = getEntityManager()
 				.createQuery(
-						"SELECT c FROM ChainProjComponent c WHERE c.Id_Project = :idChainProj and c.Selected='1'");
+						"Select c from ChainProjComponent c where c.id = :idChainProj and c.selected='1'");
 		q2.setParameter("idChainProj", idChainProj);
 
-		ChainProjComponent returnComponent = (ChainProjComponent) q
-				.getSingleResult();
+		List<ChainProjComponent> returnComponent = q2.getResultList();
 
 		if (!returnComponent.equals(null)) {
-			returnComponent.setSelected('0');
-			getEntityManager().merge(returnComponent);
+			ChainProjComponent returnComponent1 = returnComponent.get(0);
+			returnComponent1.setSelected('0');
+			getEntityManager().merge(returnComponent1);
 		}
 
 		Query q3 = getEntityManager().createQuery(
-				"SELECT c FROM ChainProjComponent c WHERE c.Id = :idComp");
+				"Select c from ChainProjComponent c where c.id = :idComp");
 		q3.setParameter("idComp", idComponent);
 
-		returnComponent = (ChainProjComponent) q.getSingleResult();
+		returnComponent = q3.getResultList();
 
 		if (!returnComponent.equals(null)) {
-			returnComponent.setSelected('1');
-			getEntityManager().merge(returnComponent);
+			ChainProjComponent returnComponent1 = returnComponent.get(0);
+			returnComponent1.setSelected('1');
+			getEntityManager().merge(returnComponent1);
 		}
 
 	}
@@ -158,7 +163,7 @@ public class ChainDAOImpl implements ChainDAO {
 		List<ChainProject> resultQuery = new ArrayList<ChainProject>();
 
 		Query q = getEntityManager().createQuery(
-				"Select m from ChainProject m where project = :project");
+				"Select m from ChainProject m where m.project = :project");
 
 		q.setParameter("project", project.trim());
 
@@ -270,12 +275,12 @@ public class ChainDAOImpl implements ChainDAO {
 
 		List<Object[]> resultQuery = q.getResultList();
 
-//		for (Object[] l : resultQuery) {
-//			
-//			System.out.println("Component -> Project: "
-//					+ Integer.toString((Integer) l[0]) + " Component1 - "
-//					+ (String) l[1] + " Component2 - " + (String) l[2]);
-//		}
+		// for (Object[] l : resultQuery) {
+		//
+		// System.out.println("Component -> Project: "
+		// + Integer.toString((Integer) l[0]) + " Component1 - "
+		// + (String) l[1] + " Component2 - " + (String) l[2]);
+		// }
 
 		return resultQuery;
 

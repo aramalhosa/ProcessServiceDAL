@@ -13,9 +13,10 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 
-import org.hibernate.sql.Select;
+import org.apache.commons.collections.CollectionUtils;
 
 import com.ajr.process.service.entity.ChainProjComponent;
+import com.ajr.process.service.entity.ChainProject;
 import com.ajr.process.service.entity.ComponentRelation;
 
 public class DirectAccessDAL {
@@ -34,7 +35,8 @@ public class DirectAccessDAL {
 		// selectRelation();
 		// selectRelationJPA();
 		// selectRelationJPA1();
-		selectRelationJPA2();
+		// selectRelationJPA2();
+		selectChainProjectJPA();
 		// shutdown();
 	}
 
@@ -102,26 +104,11 @@ public class DirectAccessDAL {
 
 	private static void selectRelationJPA2() {
 
-		// List<ComponentRelation> resultQuery = new ArrayList<ComponentRelation>();
-
 		EntityManagerFactory entityManagerFactory = Persistence
 				.createEntityManagerFactory("ProcessServiceDAL");
 		EntityManager entityManager = entityManagerFactory
 				.createEntityManager();
 		entityManager.getTransaction().begin();
-
-		// Query q = entityManager.createQuery(
-		// "Select c from ChainProjComponent p join p.componentRelations c where p.id = 1");
-		//
-		// resultQuery = q.getResultList();
-		//
-		// for (ComponentRelation l : resultQuery) {
-		//
-		// System.out.println("Component -> Project: " +
-		// l.getChainProjectComponent2().getId() + " Component1 - " +
-		// l.getChainProjectComponent2().getDescription() + " Component2 - " +
-		// l.getChainProjectComponent2().getAttribute());
-		// }
 
 		Query q = entityManager
 				.createQuery("Select c.chainProjectComponent2.id, c.chainProjectComponent2.description, c.chainProjectComponent2.attribute from ChainProjComponent p join p.componentRelations c where p.id = 1");
@@ -137,6 +124,35 @@ public class DirectAccessDAL {
 
 		entityManager.close();
 	}
+	
+
+	private static void selectChainProjectJPA() {
+
+		EntityManagerFactory entityManagerFactory = Persistence
+				.createEntityManagerFactory("ProcessServiceDAL");
+		EntityManager entityManager = entityManagerFactory
+				.createEntityManager();
+		entityManager.getTransaction().begin();
+		
+		String project = "XPTO";
+		
+		Query q = entityManager
+				.createQuery("Select c from ChainProject c where c.project = :proj and c.selected='1'");
+	
+		q.setParameter("proj", project);
+
+		List<ChainProject> resultQuery = new ArrayList<ChainProject>();		
+		resultQuery = q.getResultList();
+		
+		String result = CollectionUtils.isEmpty(resultQuery) ? "" : resultQuery.get(0).getDescription();
+		System.out.println("Project: " + result);
+		
+		
+		
+
+
+		entityManager.close();
+	}	
 
 	private static void selectRelation() {
 		try {
