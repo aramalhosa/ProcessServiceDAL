@@ -7,13 +7,13 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Repository;
 
 import com.ajr.process.service.dao.ChainDAO;
 import com.ajr.process.service.entity.ChainProjComponent;
 import com.ajr.process.service.entity.ChainProject;
 import com.ajr.process.service.entity.ComponentRelation;
+import com.ajr.process.service.exceptions.AttributeAlreadyExistsException;
 import com.ajr.process.service.exceptions.EntityNotFoundException;
 
 @Repository("chainDAO")
@@ -60,26 +60,94 @@ public class ChainDAOImpl implements ChainDAO {
 
 	}
 
-	public void insertProjectComponent(int id, String attribute,
-			String description) {
+	@SuppressWarnings("unchecked")
+	public void insertProjectComponent(String project, String attribute,
+			String description) throws AttributeAlreadyExistsException {
 
 		try {
 
+			List<ChainProjComponent> resultQuery = new ArrayList<ChainProjComponent>();
+			List<ChainProject> resultQuery1 = new ArrayList<ChainProject>();
+
 			ChainProjComponent newPRJComp = new ChainProjComponent();
 
-			ChainProject projActualizar = findChainProjectData(
-					ChainProject.class, id);
+			String selectQuery = "Select c from ChainProjComponent c join c.chainProject p where c.attribute = :attr and p.project = :projName";
 
-			newPRJComp.setChainProject(projActualizar);
-			newPRJComp.setAttribute(attribute.trim());
-			newPRJComp.setDescription(description.trim());
-			newPRJComp.setSelected('0');
+			Query q = getEntityManager().createQuery(selectQuery);
 
-			getEntityManager().persist(newPRJComp);
+			q.setParameter("projName", project);
+			q.setParameter("attr", attribute);
+
+			resultQuery = q.getResultList();
+
+			if (resultQuery.isEmpty()) {
+
+				selectQuery = "Select c from ChainProject c where c.project = :projName";
+
+				q = getEntityManager().createQuery(selectQuery);
+
+				q.setParameter("projName", project);
+
+				resultQuery1 = q.getResultList();
+
+				ChainProject returnChainProj1 = resultQuery1.get(0);
+
+				ChainProject projActualizar = findChainProjectData(
+						ChainProject.class, returnChainProj1.getId());
+
+				newPRJComp.setChainProject(projActualizar);
+				newPRJComp.setAttribute(attribute.trim());
+				newPRJComp.setDescription(description.trim());
+				newPRJComp.setSelected('0');
+
+				getEntityManager().persist(newPRJComp);
+
+			} else {
+
+				throw new AttributeAlreadyExistsException(project, attribute);
+			}
 
 		} catch (EntityNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+
+	}
+
+	public void insertComponentsRelation(int compId1, int compId2) {
+
+		List<ChainProjComponent> resultQuery1 = new ArrayList<ChainProjComponent>();
+		List<ChainProjComponent> resultQuery2 = new ArrayList<ChainProjComponent>();
+
+		ComponentRelation newCompRel = new ComponentRelation();
+
+		String selectQuery = "Select c from ChainProjComponent c where c.id = :compId";
+
+		Query q = getEntityManager().createQuery(selectQuery);
+
+		q.setParameter("compId", compId1);
+
+		resultQuery1 = q.getResultList();
+
+		if (!resultQuery1.isEmpty()) {
+
+			String selectQuery1 = "Select c from ChainProjComponent c where c.id = :compId";
+
+			Query q1 = getEntityManager().createQuery(selectQuery1);
+
+			q1.setParameter("compId", compId2);
+
+			resultQuery2 = q.getResultList();
+
+			if (!resultQuery2.isEmpty()) {
+				newCompRel.setChainProjectComponent(resultQuery1.get(0));
+				newCompRel.setChainProjectComponent2(resultQuery2.get(0));
+				newCompRel.setProjectId(resultQuery1.get(0).getId());
+				
+				getEntityManager().persist(newCompRel);
+				
+			}
+
 		}
 
 	}
@@ -100,7 +168,7 @@ public class ChainDAOImpl implements ChainDAO {
 			em.remove(m);
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public void updateSelecedProjectComponent(String project, int idChainProj,
 			int idComponent) {
@@ -213,7 +281,13 @@ public class ChainDAOImpl implements ChainDAO {
 				"Select m from ChainProject m where m.id = :project ");
 		q.setParameter("project", projectId);
 
-		resultQuery = (ChainProject) q.getSingleResult();
+		List results = q.getResultList();
+
+		if (!results.isEmpty()) {
+			resultQuery = (ChainProject) results.get(0);
+		}
+
+		// resultQuery = (ChainProject) q.getSingleResult();
 
 		return resultQuery;
 	}
@@ -227,23 +301,33 @@ public class ChainDAOImpl implements ChainDAO {
 						"Select c from ChainProject c where c.project= :project and c.selected = '1'");
 		q.setParameter("project", project);
 
+		// List results = q.getResultList();
+		//
+		// if(!results.isEmpty()){
+		// resultQuery = (ChainProject) results.get(0);
+		// }
+
 		resultQuery = (ChainProject) q.getSingleResult();
 
 		return resultQuery;
 	}
 
-	public ChainProjComponent retrieveProjectComponent(int projectId,
-			int componentId) {
+	public ChainProjComponent retrieveComponent(int componentId) {
 
 		ChainProjComponent resultQuery = new ChainProjComponent();
 
-		Query q = getEntityManager()
-				.createQuery(
-						"Select c from ChainProjComponent c where c.id = :idComp and c.ChainProject.id = :idProj");
-		q.setParameter("idProj", projectId);
+		Query q = getEntityManager().createQuery(
+				"Select c from ChainProjComponent where c.id = :idComp");
+
 		q.setParameter("idComp", componentId);
 
-		resultQuery = (ChainProjComponent) q.getSingleResult();
+		List results = q.getResultList();
+
+		if (!results.isEmpty()) {
+			resultQuery = (ChainProjComponent) results.get(0);
+		}
+
+		// resultQuery = (ChainProjComponent) q.getSingleResult();
 
 		return resultQuery;
 
@@ -259,7 +343,12 @@ public class ChainDAOImpl implements ChainDAO {
 		Query q = getEntityManager().createQuery(selectQuery);
 		q.setParameter("project", project);
 
-		resultQuery = (ChainProjComponent) q.getSingleResult();
+		List results = q.getResultList();
+
+		if (!results.isEmpty()) {
+			resultQuery = (ChainProjComponent) results.get(0);
+		}
+		// resultQuery = (ChainProjComponent) q.getSingleResult();
 
 		return resultQuery;
 	}
@@ -287,14 +376,15 @@ public class ChainDAOImpl implements ChainDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<ComponentRelation> retrieveRelations() {
+	public List<Object[]> retrieveRelations(int idComp) {
 
-		List<ComponentRelation> resultQuery = new ArrayList<ComponentRelation>();
+		Query q = getEntityManager()
+				.createQuery(
+						"Select r2.id, r2.attribute, r2.description from ComponentRelation c join c.chainProjectComponent r1 join c.chainProjectComponent2 r2 where r1.id = :componentId");
 
-		Query q = getEntityManager().createQuery(
-				"Select c from ComponentRelation c where c.projectId = 1");
+		q.setParameter("componentId", idComp);
 
-		resultQuery = q.getResultList();
+		List<Object[]> resultQuery = q.getResultList();
 
 		return resultQuery;
 
