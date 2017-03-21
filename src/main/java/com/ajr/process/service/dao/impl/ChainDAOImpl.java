@@ -114,12 +114,12 @@ public class ChainDAOImpl implements ChainDAO {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public void insertComponentsRelation(int compId1, int compId2) {
 
 		List<ChainProjComponent> resultQuery1 = new ArrayList<ChainProjComponent>();
 		List<ChainProjComponent> resultQuery2 = new ArrayList<ChainProjComponent>();
-
-		ComponentRelation newCompRel = new ComponentRelation();
+		List<ComponentRelation> resultQuery3 = new ArrayList<ComponentRelation>();
 
 		String selectQuery = "Select c from ChainProjComponent c where c.id = :compId";
 
@@ -137,15 +137,39 @@ public class ChainDAOImpl implements ChainDAO {
 
 			q1.setParameter("compId", compId2);
 
-			resultQuery2 = q.getResultList();
+			resultQuery2 = q1.getResultList();
 
 			if (!resultQuery2.isEmpty()) {
-				newCompRel.setChainProjectComponent(resultQuery1.get(0));
-				newCompRel.setChainProjectComponent2(resultQuery2.get(0));
-				newCompRel.setProjectId(resultQuery1.get(0).getId());
-				
-				getEntityManager().persist(newCompRel);
-				
+
+				String selectQuery2 = "Select r from ComponentRelation r join r.chainProjectComponent c join chainProjectComponent2 c2 where c.id = :compId and c2.id = :compId2";
+
+				Query q2 = getEntityManager().createQuery(selectQuery2);
+
+				q2.setParameter("compId", compId1);
+				q2.setParameter("compId2", compId2);
+
+				resultQuery3 = q2.getResultList();
+
+				if (resultQuery3.isEmpty()) {
+					
+					ComponentRelation newCompRel = new ComponentRelation();
+
+					newCompRel.setChainProjectComponent(resultQuery1.get(0));
+					newCompRel.setChainProjectComponent2(resultQuery2.get(0));
+					newCompRel.setProjectId(resultQuery1.get(0).getId());
+
+					getEntityManager().persist(newCompRel);
+					
+					ComponentRelation newCompRel2 = new ComponentRelation();
+
+					newCompRel2.setChainProjectComponent(resultQuery2.get(0));
+					newCompRel2.setChainProjectComponent2(resultQuery1.get(0));
+					newCompRel2.setProjectId(resultQuery1.get(0).getId());
+
+					getEntityManager().persist(newCompRel2);
+
+				}
+
 			}
 
 		}

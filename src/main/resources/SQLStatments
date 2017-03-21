@@ -11,7 +11,7 @@ CREATE TABLE ProcessServiceSchema.ChainProjects (
    Id INTEGER GENERATED ALWAYS AS IDENTITY NOT NULL,
    Project VARCHAR(30),
    Description VARCHAR (250),
-   IdProject INTEGER,
+   ChainProject VARCHAR(30),
    Selected VARCHAR(1)
 )
 
