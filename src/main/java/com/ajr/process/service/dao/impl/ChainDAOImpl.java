@@ -151,7 +151,7 @@ public class ChainDAOImpl implements ChainDAO {
 				resultQuery3 = q2.getResultList();
 
 				if (resultQuery3.isEmpty()) {
-					
+
 					ComponentRelation newCompRel = new ComponentRelation();
 
 					newCompRel.setChainProjectComponent(resultQuery1.get(0));
@@ -159,7 +159,7 @@ public class ChainDAOImpl implements ChainDAO {
 					newCompRel.setProjectId(resultQuery1.get(0).getId());
 
 					getEntityManager().persist(newCompRel);
-					
+
 					ComponentRelation newCompRel2 = new ComponentRelation();
 
 					newCompRel2.setChainProjectComponent(resultQuery2.get(0));
@@ -189,7 +189,7 @@ public class ChainDAOImpl implements ChainDAO {
 		componentsToRemove = q.getResultList();
 
 		for (ChainProjComponent m : componentsToRemove) {
-			em.remove(m);
+			getEntityManager().remove(m);
 		}
 	}
 
@@ -245,6 +245,92 @@ public class ChainDAOImpl implements ChainDAO {
 			ChainProjComponent returnComponent1 = returnComponent.get(0);
 			returnComponent1.setSelected('1');
 			getEntityManager().merge(returnComponent1);
+		}
+
+	}
+
+	@SuppressWarnings("unchecked")
+	public void updateComponentRelations(int componentId,
+			List<Integer> relationsIds) {
+		
+		String selectQuery = "Select c from ChainProjComponent c where c.id = :compId";
+
+		Query q = getEntityManager().createQuery(selectQuery);
+
+		q.setParameter("compId", componentId);
+
+		List<ChainProjComponent> componentList = q.getResultList();	
+		
+
+		String selectQuery1 = "Select c2.id from ComponentRelation r join r.chainProjectComponent c1 join r.chainProjectComponent2 c2 where c1.id = :idComponent";
+
+		Query q1 = getEntityManager().createQuery(selectQuery1);
+
+		q1.setParameter("idComponent", componentId);
+
+		List<Integer> relationsIdsAlreadyExist = q1.getResultList();
+		
+
+		for (Integer i : relationsIds) {
+
+			if (!relationsIdsAlreadyExist.contains(i)) {
+
+				String selectQuery2 = "Select c from ChainProjComponent c where c.id = :compId";
+
+				Query q2 = getEntityManager().createQuery(selectQuery2);
+
+				q2.setParameter("compId", i);
+
+				List<ChainProjComponent> componentList2 = q2.getResultList();
+
+				ComponentRelation newCompRel = new ComponentRelation();
+
+				newCompRel.setChainProjectComponent(componentList.get(0));
+				newCompRel.setChainProjectComponent2(componentList2.get(0));
+				newCompRel.setProjectId(componentList.get(0).getId());
+
+				getEntityManager().persist(newCompRel);
+
+				ComponentRelation newCompRel2 = new ComponentRelation();
+
+				newCompRel2.setChainProjectComponent(componentList2.get(0));
+				newCompRel2.setChainProjectComponent2(componentList.get(0));
+				newCompRel2.setProjectId(componentList.get(0).getId());
+
+				getEntityManager().persist(newCompRel2);
+
+			}
+
+		}
+		
+		for (Integer i : relationsIdsAlreadyExist) {
+			
+			if (!relationsIds.contains(i)) {
+				
+				String selectQuery2 = "Select r from ComponentRelation r join r.chainProjectComponent c1 join r.chainProjectComponent2 c2 where c1.id = :idComponent1 and c2.id = :idComponent2";
+				
+				Query q2 = getEntityManager().createQuery(selectQuery2);
+
+				q2.setParameter("idComponent1", componentId);
+				q2.setParameter("idComponent2", i);
+				
+				List<ComponentRelation> relationDelete = q2.getResultList();
+				
+				getEntityManager().remove(relationDelete.get(0));
+				
+				selectQuery2 = "Select r from ComponentRelation r join r.chainProjectComponent c1 join r.chainProjectComponent2 c2 where c1.id = :idComponent1 and c2.id = :idComponent2";
+				
+				q2 = getEntityManager().createQuery(selectQuery2);
+
+				q2.setParameter("idComponent1", i);
+				q2.setParameter("idComponent2", componentId);
+				
+				relationDelete = q2.getResultList();
+				
+				getEntityManager().remove(relationDelete.get(0));
+				
+			}
+			
 		}
 
 	}
@@ -367,14 +453,14 @@ public class ChainDAOImpl implements ChainDAO {
 
 		Query q = getEntityManager().createQuery(selectQuery);
 		q.setParameter("project", project);
-		
+
 		List results = q.getResultList();
-		
+
 		selectQuery = "Select p from ChainProject p join p.chainProjComponents c where p.project= :project and p.selected = '1' and c.selected = '1'";
 
 		q = getEntityManager().createQuery(selectQuery);
 		q.setParameter("project", project);
-		
+
 		List results1 = q.getResultList();
 
 		if (!results.isEmpty()) {
