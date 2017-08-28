@@ -175,13 +175,13 @@ public class ChainDAOImpl implements ChainDAO {
 		}
 
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	public void removeProjectComponents(int idProject) {
 
 		List<ChainProjComponent> componentsToRemove = new ArrayList<ChainProjComponent>();
 
-		String selectQuery = "Select m from ChainProjComponent m where m.id = :project";
+		String selectQuery = "Select m from ChainProjComponent m join m.chainProject p where p.id = :project";
 
 		Query q = getEntityManager().createQuery(selectQuery);
 		q.setParameter("project", idProject);
@@ -192,6 +192,49 @@ public class ChainDAOImpl implements ChainDAO {
 			getEntityManager().remove(m);
 		}
 	}
+	
+	@SuppressWarnings("unchecked")
+	public void removeProjectComponent(int component) {
+
+		List<ComponentRelation> relationsToRemove = new ArrayList<ComponentRelation>();
+
+		String selectQuery = "Select r from ComponentRelation r join r.chainProjectComponent c where c.id = :component";	
+		
+		Query q = getEntityManager().createQuery(selectQuery);
+		q.setParameter("component", component);
+
+		relationsToRemove = q.getResultList();
+
+		for (ComponentRelation relation : relationsToRemove) {
+			getEntityManager().remove(relation);
+		}
+		
+		List<ComponentRelation> relationsToRemove1 = new ArrayList<ComponentRelation>();
+
+		String selectQuery1 = "Select r from ComponentRelation r join r.chainProjectComponent2 c where c.id = :component";	
+		
+		Query q1 = getEntityManager().createQuery(selectQuery1);
+		q1.setParameter("component", component);
+
+		relationsToRemove1 = q1.getResultList();
+
+		for (ComponentRelation relation : relationsToRemove1) {
+			getEntityManager().remove(relation);
+		}		
+		
+		List<ChainProjComponent> componentsToRemove = new ArrayList<ChainProjComponent>();
+
+		String selectQuery2 = "Select m from ChainProjComponent m where m.id = :component";
+
+		Query q2 = getEntityManager().createQuery(selectQuery2);
+		q2.setParameter("component", component);
+
+		componentsToRemove = q2.getResultList();
+
+		for (ChainProjComponent comp : componentsToRemove) {
+			getEntityManager().remove(comp);
+		}
+	}	
 
 	@SuppressWarnings("unchecked")
 	public void updateSelecedProjectComponent(String project, int idChainProj,

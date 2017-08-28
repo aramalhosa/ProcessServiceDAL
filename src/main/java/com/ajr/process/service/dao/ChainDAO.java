@@ -18,6 +18,8 @@ public interface ChainDAO {
 	public void insertComponentsRelation(int compId1, int compId2);
 
 	public void removeProjectComponents(int idProject);
+	
+	public void removeProjectComponent(int component);
 
 	public void updateSelecedProjectComponent(String project, int projChain,
 			int component);
